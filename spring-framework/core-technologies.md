@@ -209,7 +209,7 @@ The <context:annotation-config/> element implicitly registers the following post
 - PersistenceAnnotationBeanPostProcessor
 - EventListenerMethodProcessor
 
-## KEY TERMS
+### KEY TERMS
 
 - IoC (Inversion of Control) Principle
 - DI (Dependency Injection) is a specialized form of IoC
