@@ -1004,6 +1004,56 @@ available over HTTP as well as through JMX MBeans.
 - Actuator web endpoints can be secured using Spring Security, much like any
   other endpoint in a Spring web application.
 
+### Administering Spring
+
+- Spring Boot Admin - An UI Platform
+
+The Spring Boot Admin is an administrative frontend web application that makes
+Actuator endpoints more consumable by humans. It’s split into two primary components: the Spring Boot Admin server and its clients. The Admin server collects and
+displays Actuator data that’s fed to it from one or more Spring Boot applications,
+which are identified as Spring Boot Admin clients,
+
+#### Summary
+
+- The Spring Boot Admin server consumes the Actuator endpoints from one or more Spring Boot
+  applications and presents the data in a user-friendly web application.
+- Spring Boot applications can either register themselves as clients to the Admin server or
+  the Admin server can discover them through Eureka.
+- Unlike the Actuator endpoints that capture a snapshot of an application’s state, the Admin
+  server is able to display a live view into the inner workings of an application.
+- The Admin server makes it easy to filter Actuator results and, in some cases, display data
+  visually in a graph.
+- Because it’s a Spring Boot application, the Admin server can be secured by any
+  means available through Spring Security.
+
+### Deploying Spring
+
+#### Cloud Foundry
+
+Cloud Foundry is an open source PaaS platform that originated at Pivotal, the
+same company that sponsors the Spring Framework and the other libraries in the
+Spring platform. One of the most compelling things about Cloud Foundry is that it
+offers both open source and commercial-based distributions, giving you the choice of
+how and where you use Cloud Foundry. It can even be run inside the firewall in a corporate data center, offering a private cloud.
+
+#### Running Spring Boot in a Docker container
+
+Docker (https://www.docker.com/) has become the de facto standard for distributing
+applications of all kinds for deployment in the cloud. Many different cloud environments, including AWS, Microsoft Azure, Google Cloud Platform, and Pivotal Web Services (to name a few) accept Docker containers for deploying applications
+
+#### Summary
+
+- Spring applications can be deployed in a number of different environments, including traditional
+  application servers, platform-as-a-service (PaaS) environments like Cloud Foundry, or as Docker containers.
+- When building a WAR file, you should include a class that subclasses SpringBootServletInitializr to
+  ensure that Spring’s DispatcherServlet is properly configured.
+- Building as an executable JAR file allows a Spring Boot application to be deployed to several
+  cloud platforms without the overhead of a WAR file.
+- Containerizing Spring applications is as simple as using Spotify’s Dockerfile plugin for Maven.
+  It wraps an executable JAR file in a Docker container that can be deployed anywhere Docker containers
+  can be deployed, including cloud providers such as Amazon Web Services, Microsoft Azure, Google Cloud
+  Platform, Pivotal Web Services (PWS), and Pivotal Container Service (PKS).
+
 ### KEY TERMS
 
 - NOTE: To Enable any Spring Boot Service
@@ -1065,8 +1115,10 @@ available over HTTP as well as through JMX MBeans.
 - Spring Cloud’s Config Server - (Centralized configuration for all services)
 - Hystrix - (Netflix Hystrix is a Java implementation of the circuit breaker pattern)
 - Spring Boot Actuator - (Monitoring and Metrics to Spring Boot applications)
+- Spring Boot Admin - (Consume Actuator Endpoints and present data in a user-friendly web application)
 - Turbine (Netflix Turbine offers a way to aggregate all of the Hystrix streams from all the
-  microservices into a single stream that the Hystrix dashboard can monitor
+  microservices into a single stream that the Hystrix dashboard can monitor)
 
 - Circuit breaker provides fallback behaviour and is self-correcting
 - Mitigate Latency
+- Eureka Registration records metadata
