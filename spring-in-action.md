@@ -623,6 +623,49 @@ the entire topic. Responsibility for the topic is split across all nodes.
   in the course of a flow.
 - Message channels connect the components of an integration flow.
 
+### Introducing Reactor
+
+- Imperative Code
+- Reactive Code
+
+- Example
+
+  - Imperative Programming - A water balloon carries its payload all at once, soaking its intended target at the
+    moment of impact.
+
+  - Reactive Programming - A garden hose carries its payload as a stream of water that flows from the spigot
+    to the nozzle.
+
+There’s nothing inherently wrong with water balloons (or `imperative` programming),
+but the person holding the garden hose (or applying `reactive` programming) has an
+advantage in regard to scalability and performance.
+
+#### Understanding Reactive Programming
+
+The idea is simple: you write code as a list of instructions to be followed, one at a time, in the order
+that they’re encountered. A task is performed and the program waits for it to complete before moving on to the next task. At each step along the way, the data that’s to be processed must be fully available so that it can be processed as a whole.
+
+- Managing concurrency in multiple threads is challenging. More threads mean more complexity
+
+- In contrast, reactive programming is functional and declarative in nature.
+
+#### Defining Reactive Streams
+
+`Reactive Streams` is an initiative started in late 2013 by engineers from Netflix, Lightbend, and Pivotal (the company behind Spring). Reactive Streams aims to provide a standard for asynchronous stream processing with non-blocking backpressure
+
+The Reactive Streams specification can be summed up by four interface definitions:
+`Publisher`, `Subscriber`, `Subscription`, and `Processor`
+
+#### Summary
+
+- Reactive programming involves creating pipelines through which data flows.
+- The Reactive Streams specification defines four types: Publisher, Subscriber,
+  Subscription, and Transformer (which is a combination of Publisher and Subscriber).
+- Project Reactor implements Reactive Streams and abstracts stream definitions
+  into two primary types, Flux and Mono, each of which offers several hundred operations.
+- Spring 5 leverages Reactor to create reactive controllers, repositories, REST clients,
+  and other reactive framework support.
+
 ### KEY TERMS
 
 - At its core, Spring offers a container, often referred to as the `Spring application context`,
@@ -654,3 +697,10 @@ the entire topic. Responsibility for the topic is split across all nodes.
 - AMQP - Advanced Message Queue Protocol
 - How the message get from an `exchange` to a `queue` depends on the `binding` definitions
 - Kafka is designed to run in a cluster, affording great scalability. And by partitioning its topics across all instances in the cluster, it’s very resilient
+
+- Nature of Imperative Programming
+- Reactive programming has an advantage in regard to scalability and performance.
+- `Reactive Streams` is an initiative started in late 2013 by engineers from Netflix, Lightbend, and Pivotal
+- Reactive Streams aims to provide a standard for asynchronous stream processing with non-blocking backpressure
+- Asynchronous Stream Processing
+- Non-Blocking Backpressure
