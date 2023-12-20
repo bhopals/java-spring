@@ -154,7 +154,68 @@ public class WebConfig implements WebMvcConfigurer {
 - In addition to Thymeleaf, Spring supports a variety of view options, including
   FreeMarker, Groovy Templates, and Mustache
 
+### Spring Data
+
+- Spring support for JDBC (Java Database Connectivity) to eliminate boilerplate code.
+- Spring support for JPA (Java Persistence API), eliminating even more code.
+
+- Spring’s JdbcTemplate greatly simplifies working with JDBC.
+- PreparedStatementCreator and KeyHolder can be used together
+  when you need to know the value of a database-generated ID.
+- For easy execution of data inserts, use SimpleJdbcInsert.
+- Spring Data JPA makes JPA persistence as easy as writing a repository interface
+
+### Spring Security
+
+- To Enable Spring Authentication
+
+```
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {}
+```
+
+- Spring Security offers several options for configuring a user store, including
+  these: (by overriding `configure` method)
+
+  - In-Memory user store
+  - JDBC-based user store
+  - LDAP-backed user store (LDAP - Lightweight directory access protocol )
+  - Custom User authentication - (User Details stored in DB)
+
+- `AuthenticationManagerBuilder auth` to specify how users will be looked up during authentication.
+
+#### LDAP
+
+```
+@Override
+protected void configure(AuthenticationManagerBuilder auth)
+ throws Exception {
+ auth
+ .ldapAuthentication()
+ .userSearchBase("ou=people")
+ .userSearchFilter("(uid={0})")
+ .groupSearchBase("ou=groups")
+ .groupSearchFilter("member={0}")
+ .passwordCompare()
+ .passwordEncoder(new BCryptPasswordEncoder())
+ .passwordAttribute("passcode")
+ .contextSource()
+ .url("ldap://tacocloud.com:389/dc=tacocloud,dc=com");
+}
+
+```
+
+- Spring Security autoconfiguration is a great way to get started with security, but most applications
+  will need to explicitly configure security to meet their unique security requirements.
+- User details can be managed in user stores backed by relational databases, LDAP, or
+  completely custom implementations.
+- Spring Security automatically protects against CSRF attacks.
+- Information about the authenticated user can be obtained via the SecurityContext object (returned
+  from SecurityContextHolder.getContext()) or injected into controllers using `@AuthenticationPrincipal`.
+
 ### KEY TERMS
 
 - At its core, Spring offers a container, often referred to as the `Spring application context`,
   that creates and manages application components.
+- persisting objects to a database
