@@ -244,6 +244,385 @@ The Spring environment pulls from several property sources, including:
 - Spring profiles can be used with property sources to conditionally set configuration
   properties based on the active profile(s).
 
+### Creating REST Services
+
+#### Enabling hypermedia
+
+The API you’ve created thus far is fairly basic, but it does work as long as the client
+that consumes it is aware of the API’s URL scheme. For example, a client may be hardcoded to know that it can obtain a list of recently created tacos by issuing a GET request
+for /design/recent. Likewise, it may be hardcoded to know that it can append the ID
+of any taco in that list to /design to get the URL for that particular taco resource.
+Using hardcoded URL patterns and string manipulation is common among API
+client code. But imagine for a moment what would happen if the API’s URL scheme
+were to change. The hardcoded client code would have an obsolete understanding of
+the API and would thus be broken. Hardcoding API URLs and using string manipulation on them makes the client code brittle.
+
+Hypermedia as the Engine of Application State, or HATEOAS, is a means of creating
+self-describing APIs wherein resources returned from an API contain links to related
+resources. This enables clients to navigate an API with minimal understanding of the
+API’s URLs. Instead, it understands relationships between the resources served by the API
+and uses its understanding of those relationships to discover the API’s URLs as it traverses those relationships.
+
+This particular flavor of `HATEOAS` is known as `HAL` (Hypertext Application Language; http://stateless.co/hal_specification.html), a simple and commonly used format for embedding hyperlinks in JSON responses
+
+```
+{
+
+ "_embedded": {
+ "tacoResourceList": [
+ {
+ "name": "Veg-Out",
+ "createdAt": "2018-01-31T20:15:53.219+0000",
+ "ingredients": [
+ {
+ "name": "Flour Tortilla", "type": "WRAP",
+ "_links": {
+ "self": { "href": "http://localhost:8080/ingredients/FLTO" }
+ }
+ },
+ {
+ "name": "Corn Tortilla", "type": "WRAP",
+ "_links": {
+ "self": { "href": "http://localhost:8080/ingredients/COTO" }
+ }
+ },
+ {
+ "name": "Diced Tomatoes", "type": "VEGGIES",
+ "_links": {
+ "self": { "href": "http://localhost:8080/ingredients/TMTO" }
+ }
+ },
+ {
+ "name": "Lettuce", "type": "VEGGIES",
+ "_links": {
+ "self": { "href": "http://localhost:8080/ingredients/LETC" }
+ }
+ },
+ {
+ "name": "Salsa", "type": "SAUCE",
+ "_links": {
+ "self": { "href": "http://localhost:8080/ingredients/SLSA" }
+ }
+ }
+ ],
+ "_links": {
+ "self": { "href": "http://localhost:8080/design/4" }
+ }
+ },
+ ...
+ ]
+ },
+ "_links": {
+ "recents": {
+ "href": "http://localhost:8080/design/recent"
+ }
+ }
+}
+```
+
+- Spring HATEOAS provides two primary types that represent hyperlinked resources:
+  `Resource` and `Resources`. You build resources using `ControllerLinkBuilder`
+
+```
+@GetMapping("/recent")
+public Resources<TacoResource> recentTacos() {
+ PageRequest page = PageRequest.of(
+ 0, 12, Sort.by("createdAt").descending());
+ List<Taco> tacos = tacoRepo.findAll(page).getContent();
+ List<TacoResource> tacoResources =
+ new TacoResourceAssembler().toResources(tacos);
+ Resources<TacoResource> recentResources =
+ new Resources<TacoResource>(tacoResources);
+ recentResources.add(
+ linkTo(methodOn(DesignTacoController.class).recentTacos())
+ .withRel("recents"));
+ return recentResources;
+}
+```
+
+- REST endpoints can be created with Spring MVC, with controllers that follow
+  the same programming model as browser-targeted controllers.
+- Controller handler methods can either be annotated with @ResponseBody or
+  return ResponseEntity objects to bypass the model and view and write data
+  directly to the response body.
+- The @RestController annotation simplifies REST controllers, eliminating the
+  need to use @ResponseBody on handler methods.
+- Spring HATEOAS enables hyperlinking of resources returned from Spring MVC
+  controllers.
+- Spring Data repositories can automatically be exposed as REST APIs using Spring
+  Data REST.
+
+### Consuming REST Services
+
+A Spring application can consume a REST API with
+
+- RestTemplate — A straightforward, synchronous REST client provided by the core Spring Framework.
+- Traverson — A hyperlink-aware, synchronous REST client provided by Spring HATEOAS.
+  Inspired from a JavaScript library of the same name.
+- WebClient — A reactive, asynchronous REST client introduced in Spring 5.
+
+#### RestTemplate
+
+RestTemplate defines 12 unique operations, each of which is overloaded, providing a total
+of 41 methods.
+
+- delete(…) - Performs an HTTP DELETE request on a resource at a specified URL
+
+- exchange(…) - Executes a specified HTTP method against a URL, returning a
+  ResponseEntity containing an object mapped from the response body
+
+- execute(…) - Executes a specified HTTP method against a URL, returning an object
+  mapped from the response body
+
+- getForEntity(…) Sends an HTTP GET request, returning a ResponseEntity containing
+  an object mapped from the response body
+
+- getForObject(…) Sends an HTTP GET request, returning an object mapped from a
+  response body
+
+- headForHeaders(…) Sends an HTTP HEAD request, returning the HTTP headers for the specified resource URL
+
+- optionsForAllow(…) Sends an HTTP OPTIONS request, returning the Allow header for the
+  specified URL
+
+- patchForObject(…) Sends an HTTP PATCH request, returning the resulting object mapped
+  from the response body
+
+- postForEntity(…) POSTs data to a URL, returning a ResponseEntity containing an
+  object mapped from the response body
+
+- postForLocation(…) POSTs data to a URL, returning the URL of the newly created resource
+
+- postForObject(…) POSTs data to a URL, returning an object mapped from the response body
+
+- put(…) PUTs resource data to the specified URL
+
+#### Examples:
+
+```
+public Ingredient getIngredientById(String ingredientId) {
+ ResponseEntity<Ingredient> responseEntity =
+ rest.getForEntity("http://localhost:8080/ingredients/{id}",
+ Ingredient.class, ingredientId);
+ log.info("Fetched time: " +
+ responseEntity.getHeaders().getDate());
+ return responseEntity.getBody();
+}
+
+public void updateIngredient(Ingredient ingredient) {
+ rest.put("http://localhost:8080/ingredients/{id}",
+ ingredient,
+ ingredient.getId());
+}
+
+public Ingredient createIngredient(Ingredient ingredient) {
+ return rest.postForObject("http://localhost:8080/ingredients",
+ ingredient,
+ Ingredient.class);
+}
+```
+
+#### Navigating REST APIs with Traverson
+
+Traverson comes with Spring Data HATEOAS as the out-of-the-box solution for consuming hypermedia APIs in Spring applications. This Java-based library is inspired by a similar JavaScript library of the same name (https://github.com/traverson/traverson).
+You might have noticed that Traverson’s name kind of sounds like “traverse on”,
+which is a good way to describe how it’s used. In this section, you’ll consume an API by
+traversing the API on relation names.
+Working with Traverson starts with instantiating a Traverson object with an API’s
+base URI:
+
+```
+Traverson traverson = new Traverson(
+URI.create("http://localhost:8080/api"), MediaTypes.HAL_JSON);
+Resources<Ingredient> ingredientRes =
+ traverson
+ .follow("ingredients")
+ .toObject(ingredientType);
+Collection<Ingredient> ingredients = ingredientRes.getContent();
+```
+
+##### Summary
+
+- Clients can use RestTemplate to make HTTP requests against REST APIs.
+- Traverson enables clients to navigate an API using hyperlinks embedded in the responses.
+
+### Sending messages asynchronously
+
+- Java Message Service (JMS),
+- RabbitMQ
+- Advanced Message Queueing Protocol (AMQP)
+- Apache Kafka
+
+#### Sending messages with JMS
+
+- JMS is a Java standard that defines a common API for working with message brokers
+
+- Before JMS, each message broker had a proprietary API, making an application’s messaging code
+  less portable between brokers. But with JMS, all compliant implementations can be worked with via a common
+  interface in much the same way that JDBC has given relational database operations a common interface
+
+- Spring supports JMS through a template-based abstraction known as JmsTemplate.
+- Using JmsTemplate, it’s easy to send messages across queues and topics from the producer side and to
+  receive those messages on the consumer side.
+- Spring also supports the notion of message-driven POJOs: simple Java objects that react to messages
+  arriving on a queue or topic in an asynchronous fashion.
+
+##### Setting up JMS
+
+If you’re using ActiveMQ, you’ll need to add the following dependency to your
+project’s pom.xml file:
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-activemq</artifactId>
+</dependency>
+```
+
+If ActiveMQ Artemis is the choice, the starter dependency should look like this:
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-artemis</artifactId>
+</dependency>
+```
+
+- Set connection details in Properties file.
+
+- More Details
+  - Artemis — https://activemq.apache.org/artemis/docs/latest/using-server.html
+  - ActiveMQ — http://activemq.apache.org/getting-started.html#GettingStarted-PreInstallationRequirements
+
+##### Sending messages with JmsTemplate
+
+With a JMS starter dependency (either Artemis or ActiveMQ) in your build, Spring
+Boot will autoconfigure a JmsTemplate (among other things) that you can inject and
+use to send and receive messages.
+
+JmsTemplate has several methods that are useful for sending messages, including the following:
+
+```
+// Send raw messages
+void send(MessageCreator messageCreator) throws JmsException;
+void send(Destination destination, MessageCreator messageCreator)
+ throws JmsException;
+void send(String destinationName, MessageCreator messageCreator)
+ throws JmsException;
+// Send messages converted from objects
+void convertAndSend(Object message) throws JmsException;
+void convertAndSend(Destination destination, Object message)
+ throws JmsException;
+void convertAndSend(String destinationName, Object message)
+ throws JmsException;
+// Send messages converted from objects with post-processing
+void convertAndSend(Object message,
+ MessagePostProcessor postProcessor) throws JmsException;
+void convertAndSend(Destination destination, Object message,
+ MessagePostProcessor postProcessor) throws JmsException;
+void convertAndSend(String destinationName, Object message,
+ MessagePostProcessor postProcessor) throws JmsException;
+```
+
+##### Receiving JMS messages
+
+When it comes to consuming messages, you have the choice of a `pull` model, where your
+code requests a message and waits until one arrives, or a `push` model, in which messages
+are handed to your code as they become available.
+
+JmsTemplate offers several methods for pulling methods from the broker, including the following:
+
+```
+Message receive() throws JmsException;
+Message receive(Destination destination) throws JmsException;
+Message receive(String destinationName) throws JmsException;
+Object receiveAndConvert() throws JmsException;
+Object receiveAndConvert(Destination destination) throws JmsException;
+Object receiveAndConvert(String destinationName) throws JmsException;
+```
+
+#### Working with RabbitMQ and AMQP
+
+As arguably the most prominent implementation of AMQP, RabbitMQ offers a more
+advanced message-routing strategy than JMS. Whereas JMS messages are addressed
+with the name of a destination from which the receiver will retrieve them, AMQP messages are addressed with the name of an exchange and a routing key, which are decoupled from the queue that the receiver is listening to.
+
+Messages sent to a RabbitMQ exchange are routed to one or more queues, based on routing keys and bindings.
+
+- TERMS - Sender, Receiver, Exchange, Binding, Queue, RabbitMQ Broker, Message Routing Key,
+  Binding key, value of Message
+
+  - When a message arrives at the RabbitMQ broker, it goes to the exchange for which it
+    was addressed. The exchange is responsible for routing it to one or more queues,depending on the type of exchange, the binding between the exchange and queues, and the value of the message’s routing key.
+
+- There are several different kinds of exchanges, including the following:
+  - `Default` — A special exchange that’s automatically created by the broker. It routes
+    messages to queues whose name is the same as the message’s routing key. All
+    queues will automatically be bound to the default exchange.
+  - `Direct` — Routes messages to a queue whose binding key is the same as the message’s routing key.
+  - `Topic` — Routes a message to one or more queues where the binding key (which
+    may contain wildcards) matches the message’s routing key.
+  - `Fanout` — Routes messages to all bound queues without regard for binding keys or routing keys.
+  - `Headers` — Similar to a topic exchange, except that routing is based on message
+    header values rather than routing keys.
+  - `Dead letter` — A catch-all for any messages that are undeliverable (meaning they
+    don’t match any defined exchange-to-queue binding).
+
+The most important thing to understand is that messages are sent to `exchanges` with
+`routing keys` and they’re consumed from queues. How they get from an `exchange` to a
+`queue` depends on the `binding` definitions and what best suits your use cases
+
+You need to define `exchange` and `routing keys`
+
+```
+spring:
+ rabbitmq:
+ template:
+ exchange: tacocloud.orders
+ routing-key: kitchens.central
+```
+
+#### Messaging with Kafka
+
+At a glance, Kafka is a message broker just like ActiveMQ, Artemis, or Rabbit. But Kafka
+has a few unique tricks up its sleeves.
+
+Kafka is designed to run in a cluster, affording great scalability. And by partitioning its topics across all instances in the cluster, it’s very resilient. Whereas RabbitMQ deals primarily with queues in exchanges, Kafka utilizes topics only to offer pub/sub messaging
+
+Kafka topics are replicated across all brokers in the cluster. Each node in the cluster acts as a leader for one or more topics, being responsible for that topic’s data and
+replicating it to the other nodes in the cluster.
+
+Going a step further, each topic can be split into multiple partitions. In that case,
+each node in the cluster is the leader for one or more partitions of a topic, but not for
+the entire topic. Responsibility for the topic is split across all nodes.
+
+- A Kafka cluster is composed of multiple brokers, each acting as a leader for
+  partitions of the topics.
+
+- Each Topic replicated across all Brokers, Each Topic split into multiple partitions
+
+#### Summary
+
+- Asynchronous messaging provides a layer of indirection between communicating applications,
+  which allows for looser coupling and greater scalability.
+- Spring supports asynchronous messaging with JMS, RabbitMQ, or Apache Kafka.
+- Applications can use template-based clients (JmsTemplate, RabbitTemplate, or
+  KafkaTemplate) to send messages via a message broker.
+- Receiving applications can consume messages in a pull-based model using the
+  same template-based clients.
+- Messages can also be pushed to consumers by applying message listener annotations
+  (@JmsListener, @RabbitListener, or @KafkaListener) to bean methods.
+
+### Integrating Spring
+
+- Spring Integration enables the definition of flows through which data can be
+  processed as it enters or leaves an application.
+- Integration flows can be defined in XML, Java, or using a succinct Java DSL configuration style.
+- Message gateways and channel adapters act as entry and exit points of an integration flow.
+- Messages can be transformed, split, aggregated, routed, and processed by service activators
+  in the course of a flow.
+- Message channels connect the components of an integration flow.
+
 ### KEY TERMS
 
 - At its core, Spring offers a container, often referred to as the `Spring application context`,
@@ -256,3 +635,22 @@ The Spring environment pulls from several property sources, including:
 - Defining profile-specific properties
 - Configuring Profiles
 - Conditionally creating beans with profiles (`@Profile("dev")`)
+
+- `Hypermedia as the Engine of Application State`, or `HATEOAS`, is a means of creating
+  self-describing APIs wherein resources returned from an API contain links to related
+  resources.
+- `Traverson` — A hyperlink-aware, synchronous REST client provided by Spring HATEOAS.
+- Using RestTemplate, you are on your way writing resource-consuming REST clients.
+- Traverson comes with Spring Data HATEOAS as the out-of-the-box solution for Consuming Hypermedia APIs
+  in Spring Applications
+
+- Asynchronous Messaging/Communication
+- Making application messaging code less portable between brokers
+- With JMS, all compliant implementations can be worked with via a common interface
+- Artemis is a next-generation reimplementation of ActiveMQ
+- Messages sent to a RabbitMQ exchange are routed to one or more queues, based on routing keys and bindings.
+- An Exchange and a Routing Key
+- TERMS - Sender, Receiver, Exchange, Binding, Queue, RabbitMQ Broker
+- AMQP - Advanced Message Queue Protocol
+- How the message get from an `exchange` to a `queue` depends on the `binding` definitions
+- Kafka is designed to run in a cluster, affording great scalability. And by partitioning its topics across all instances in the cluster, it’s very resilient
