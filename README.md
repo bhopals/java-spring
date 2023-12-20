@@ -18,6 +18,10 @@ Spring Resources
 
 - You can switch persistence providers through configuration without changing your code.
 - Many other Infrastructure concerns and integration with third-party APIs.
+- Cassandra is a distributed, high-performance, always available, eventually consistent,
+  partitioned-row-store, NoSQL database.
+- non-blocking reactive code
+- blocking imperative code
 
 ### Reference
 

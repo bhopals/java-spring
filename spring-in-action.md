@@ -699,6 +699,124 @@ times are changing.
 
 - Observable v/s Single - RxJava options (equivalent for Flux / Mono in Spring WebFlux)
 
+### Persisting Data Reactivity
+
+- The essence of Spring Data’s reactive story can be summed up by saying that reactive
+  repositories have methods that accept and return Mono and Flux instead of domain
+  entities and collections.
+
+- Cassandra is a distributed, high-performance, always available, eventually consistent,
+  partitioned-row-store, NoSQL database.
+
+- MongoDB is a another well-known NoSQL database. Whereas Cassandra is a rowstore database,
+  MongoDB is considered a document database. More specifically,
+  MongoDB stores documents in BSON (Binary JSON) format, which can be queried
+  for and retrieved in a way that’s roughly similar to how you might query for data in
+  any other database.
+
+### Discovering Services
+
+- Monolith application
+- Microservices
+- Spring Cloud
+- Spring Cloud Netflix Eureka
+- Eureka - Netflix Service Registry
+- Ribbon - Client Side load balancer
+- Client Side load Balancer v/s Centeralized (Server Side) load Balancer
+- Microservice architecture is a way of factoring an application into smallscale,
+  miniature applications that are independently developed and deployed
+
+- Common challenge faced by microservice architecture is how each service
+  even knows about the other services it coordinates with
+
+- The word `Eureka` is an exclamation of joy when one finds or discovers something. This
+  makes it a fitting name for the service registries that will be used by microservices to
+  discover each other.
+
+- When a service instance starts, it’ll register itself by name with Eureka.
+
+- At some point, another service (named other-service in figure 13.1) needs to consume
+  endpoints on some-service. Rather than hard coding other-service with specific host
+  and port information for some-service, other-service only knows to look up some-service
+  from Eureka by its name. Eureka replies with information for all instances of someservice that it knows about.
+  Now other-service needs to make a decision. Which instance of some-service will it
+  use? If they’re all equivalent, then it doesn’t matter much. But to avoid any given
+  instance being chosen every time, it’s best to apply some client-side, load-balancing
+  algorithm to spread the requests around. That’s where another Netflix project—Ribbon—comes into play.
+  Although other-service could be solely responsible for both looking up and choosing an instance of some-service, it relies on Ribbon instead. Ribbon is a client-side
+  load balancer that makes the choice on behalf of other-service. Once `Ribbon` has
+  made its choice, all that’s left is for other-service to make requests to the instance that
+  Ribbon chooses.
+
+- Ribbon is a client-side load balancer that makes the choice on behalf of other-service.
+- Ribbon is used so not the same service instance returned (in case of multiple instances of the same
+  service are running, and Ribbon helps to connect us to a different service everytime it is
+  requested to distribute the load)
+
+#### Setting up a service registry
+
+Spring Cloud is a rather large umbrella project, made up of several separate subprojects that each enables microservice development in some way. One of those
+subprojects is Spring Cloud Netflix, which offers several components from the Netflix open source portfolio with a Spring twist. Among those components is Eureka,
+the Netflix service registry.
+
+##### WHY A CLIENT-SIDE LOAD BALANCER?
+
+As a client-side load balancer, Ribbon has several benefits over a centralized load
+balancer.
+
+- Because there’s one load balancer local to each client, the load balancer naturally scales
+  proportional to the number of clients.
+- Furthermore, each load balancer can be configured to employ a load-balancing algorithm best suited
+  for each client, rather than apply the same configuration for all services.
+
+Eureka expects service instances to register themselves and to continue
+to send registration renewal requests every 30 s. Normally, if Eureka doesn’t receive a
+renewal from a service for three renewal periods (or 90 s), it deregisters that instance. In
+this case, Eureka assumes there’s a network problem, enters self-preservation mode, and
+won’t deregister service instances.
+
+##### Registering and discovering services
+
+A Eureka service registry is useless unless services register themselves. If your services
+are going to be discovered and consumed by other services, then you need to enable
+them as clients of the service registry
+
+##### DEFINING FEIGN CLIENT INTERFACES
+
+`Feign` is a REST client library that applies a unique, interface-driven approach to
+defining REST clients. Put simply, if you enjoy how Spring Data automatically implements repository interfaces, then you’re going to love Feign.
+
+Feign was originally a Netflix project, but has since been turned loose as an independent open-source project called `OpenFeign` (https://github.com/OpenFeign). The word feign means “`to pretend`,” which you’ll soon see is an appropriate name for a project that pretends to be a REST client.
+
+- So you just write simple Interface code, with no implementations. Feign just does the job for you.
+
+```
+@FeignClient("ingredient-service")
+public interface IngredientClient {
+ @GetMapping("/ingredients/{id}")
+ Ingredient getIngredient(@PathVariable("id") String id);
+}
+```
+
+It’s a simple interface, with no implementations. But at runtime, when Feign gets hold
+of it, none of that matters. Feign automatically creates an implementation and exposes
+it as a bean in the Spring application context.
+
+#### Summary
+
+- Spring Cloud Netflix enables the simple creation of a Netflix Eureka service
+  registry with autoconfiguration and the @EnableEurekaServer annotation.
+
+- Microservices register themselves by name with Eureka for discovery by other services.
+
+- On the client-side, Ribbon acts as a client-side load balancer, looking up services by name
+  and selecting an instance.
+
+- Client code has the choice of either a RestTemplate that’s instrumented for Ribbon load balancing or
+  defining its REST client code as interfaces that are implemented automatically at runtime by Feign.
+
+- In any event, client code is not hard-coded with the location of the services that it consumes.
+
 ### KEY TERMS
 
 - At its core, Spring offers a container, often referred to as the `Spring application context`,
@@ -737,3 +855,13 @@ times are changing.
 - Reactive Streams aims to provide a standard for asynchronous stream processing with non-blocking backpressure
 - Asynchronous Stream Processing
 - Non-Blocking Backpressure
+
+- non-blocking reactive code
+- blocking imperative code
+- Cassandra is a distributed, high-performance, always available, eventually consistent,
+  partitioned-row-store, NoSQL database.
+
+- Eureka expects service instances to register themselves and to continue send registration
+  renewal from a service for three renewal periods.
+- Eureka self-preservation mode
+- Deregister Service instances
