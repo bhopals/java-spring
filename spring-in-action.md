@@ -84,6 +84,76 @@ public class TacoCloudApplication {
   natively in most Java development environments.
 - The components, commonly referred to as beans, in a Spring application context can be declared explicitly with Java or XML, discovered by component scanning, or automatically configured with Spring Boot autoconfiguration.
 
+### Spring Web
+
+In a Spring web application, it’s a controller’s job to fetch and process data. And
+it’s a view’s job to render that data into HTML that will be displayed in the browser.
+
+#### Create Data/Domain/Model
+
+```
+//Using  'lombok' library - import lombok.Data;import lombok.RequiredArgsConstructor;
+@Data
+@RequiredArgsConstructor
+public class Ingredient {
+ private final String id;
+ private final String name;
+ private final Type type;
+ public static enum Type {
+ WRAP, PROTEIN, VEGGIES, CHEESE, SAUCE
+ }
+}
+```
+
+- @Data annotation at the class level is to generate all of those missing methods as well as
+  a constructor that accepts all final properties as arguments
+
+#### Creating a controller class
+
+Controllers are the major players in Spring’s MVC framework. Their primary job is to
+handle HTTP requests and either hand a request off to a view to render HTML
+(browser-displayed) or write data directly to the body of a response (RESTful).
+
+- Spring MVC request-mapping annotations
+
+  - @RequestMapping General-purpose request handling
+  - @GetMapping Handles HTTP GET requests
+  - @PostMapping Handles HTTP POST requests
+  - @PutMapping Handles HTTP PUT requests
+  - @DeleteMapping Handles HTTP DELETE requests
+  - @PatchMapping Handles HTTP PATCH requests
+
+- To Register a Controller
+
+```
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+ @Override
+ public void addViewControllers(ViewControllerRegistry registry) {
+ registry.addViewController("/").setViewName("home");
+ }
+}
+```
+
+- Spring offers a powerful web framework called Spring MVC that can be used to
+  develop the web frontend for a Spring application.
+
+- Spring MVC is annotation-based, enabling the declaration of request-handling
+  methods with annotations such as @RequestMapping, @GetMapping, and @PostMapping.
+
+- Most request-handling methods conclude by returning the logical name of a
+  view, such as a Thymeleaf template, to which the request (along with any model
+  data) is forwarded.
+
+- Spring MVC supports validation through the Java Bean Validation API and
+  implementations of the Validation API such as Hibernate Validator.
+
+- View controllers can be used to handle HTTP GET requests for which no
+  model data or processing is required.
+
+- In addition to Thymeleaf, Spring supports a variety of view options, including
+  FreeMarker, Groovy Templates, and Mustache
+
 ### KEY TERMS
 
 - At its core, Spring offers a container, often referred to as the `Spring application context`,
