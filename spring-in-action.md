@@ -895,7 +895,90 @@ to fetch configuration data.
 - Config Server clients can be refreshed with new properties either manually via an Actuator
   endpoint or automatically with Spring Cloud Bus and Git webhooks.
 
+### Handling Failure and Latency
+
+The circuit breaker pattern, addresses the reality that the code we write will fail. What’s important is that when it fails, it fails gracefully. This powerful pattern is even more significant in the context of microservices, where it’s important to avoid letting failures cascade across a distributed call stack.
+
+- Where a software circuit breaker differs, however, is that it provides fallback
+  behavior and is self-correcting.
+
+#### Understanding circuit breakers
+
+Netflix Hystrix is a Java implementation of the circuit breaker pattern. Put simply, a Hystrix circuit breaker is implemented as an aspect applied to a method that triggers a fallback method should the target method fail. And, to properly implement the circuit breaker pattern, the aspect also tracks how frequently the target
+method fails and then forwards all requests to the fallback if the failure rate exceeds some threshold.
+
+```
+@SpringBootApplication
+@EnableHystrix
+public class IngredientServiceApplication {
+ ...
+}
+```
+
+`@HystrixCommand(fallbackMethod="getDefaultIngredients")` - Add annotation on top of method
+for default/fallback behaviour
+
+Curcuit breaker can also mitigate latency by timing out if a method is taking too long to return.
+
+```
+@HystrixCommand(
+ fallbackMethod="getDefaultIngredients",
+ commandProperties={
+ @HystrixProperty(
+ name="execution.isolation.thread.timeoutInMilliseconds",
+ value="500")
+ })
+```
+
+##### Managing circuit breaker thresholds
+
+By default, if a circuit breaker protected method is invoked over 20 times, and more
+than 50% of those invocations fail over a period of 10 seconds, the circuit will be thrown
+into an open state. All subsequent calls will be handled by the fallback method. After
+5 seconds, the circuit will enter a half-open state, and the original method will be
+attempted again.
+You can tweak the failure and retry thresholds by setting the Hystrix command
+properties. The following command properties influence the conditions that result in
+a circuit breaker being thrown:
+
+- `circuitBreaker.requestVolumeThreshold` — The number of times a method should be called within a
+  given time period
+- `circuitBreaker.errorThresholdPercentage` — A percentage of failed method invocations within a
+  given time period
+- `metrics.rollingStats.timeInMilliseconds` — A rolling time period for which the request volume
+  and error percentage are considered
+- `circuitBreaker.sleepWindowInMilliseconds` — How long an open circuit remains open before
+  entering a half-open state and the original failing method is attempted again
+
+- Hystric Dashboard to monitor traffic and failures
+
+##### Aggregating Multiple Hystrix Streams
+
+The Hystrix dashboard is only capable of monitoring a single stream at a time. Because
+each instance of each microservice publishes its own Hystrix stream, it’s almost impossible to get a holistic view of an application’s health.
+Fortunately, another Netflix project, Turbine, offers a way to aggregate all of the
+Hystrix streams from all the microservices into a single stream that the Hystrix dashboard can monitor. Spring Cloud Netflix supports creating a Turbine service using
+an approach similar to creating other Spring Cloud services
+
+#### Summary
+
+- The circuit breaker pattern enables graceful failure handling.
+- Hystrix implements the circuit breaker pattern, enabling fallback behavior when a method
+  fails or is too slow.
+- Each circuit breaker provided by Hystrix publishes metrics in a stream of data for purposes
+  of monitoring the health of an application.
+- The Hystrix stream can be consumed by the Hystrix dashboard, a web application that visualizes
+  circuit breaker metrics.
+- Turbine aggregates multiple Hystrix streams from multiple applications into a single stream that
+  can be visualized together in the Hystrix dashboard.
+
 ### KEY TERMS
+
+- NOTE: To Enable any Spring Boot Service
+
+  - Add Pom Depnednecy
+  - Add Main method class with `@Enable..` Annotation
+  - Add/Update `properties`
 
 - At its core, Spring offers a container, often referred to as the `Spring application context`,
   that creates and manages application components.
@@ -948,3 +1031,9 @@ to fetch configuration data.
 - Ribbon - (Client side load balancer)
 - Feign - (Rest Client Library that follows interface-driven approach)
 - Spring Cloud’s Config Server - (Centralized configuration for all services)
+- Hystrix - (Netflix Hystrix is a Java implementation of the circuit breaker pattern)
+- Turbine (Netflix Turbine offers a way to aggregate all of the Hystrix streams from all the
+  microservices into a single stream that the Hystrix dashboard can monitor
+
+- Circuit breaker provides fallback behaviour and is self-correcting
+- Mitigate Latency
