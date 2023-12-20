@@ -817,6 +817,84 @@ it as a bean in the Spring application context.
 
 - In any event, client code is not hard-coded with the location of the services that it consumes.
 
+### Managing Configuration
+
+- Spring Cloud’s Config Server
+
+- Spring Cloud’s Config Server, a service that provides centralized configuration for all services in a
+  given application. With Config Server, you can manage all of an application’s configuration in one place, without duplication. Before we get started, let’s briefly consider the problems of configuring microservices individually, and how centralized configuration is better.
+
+- When configuration management is centralized:
+
+  - Configuration is no longer packaged and deployed with the application code,
+    making it possible to change or roll back configuration without rebuilding or
+    redeploying the application. Configuration can be changed on the fly without
+    even restarting the application.
+
+  - Microservices that share common configuration needn’t manage their own
+    copy of the property settings and can share the same properties. If changes to
+    the properties are required, those changes can be made once, in a single place,
+    and applied to all microservices.
+
+  - Sensitive configuration details can be encrypted and maintained separate from
+    the application code. The unencrypted values can be made available to the
+    application on demand, rather than requiring the application to carry code
+    that decrypts the information.
+
+Spring Cloud Config Server provides centralized configuration with a server that all
+microservices within an application can rely on for their configuration. Because it’s
+centralized, it’s a one-stop shop for configuration that’s common across all services,
+but it’s also able to serve configuration that’s specific to a given service.
+
+#### Running Config Server
+
+Spring Cloud Config Server provides a centralized source for configuration data. Much like Eureka, Config Server can be considered just another microservice whose role in the greater application is to serve configuration data for other services in the same application.
+
+Config Server exposes a REST API through which clients (which are other services) can consume configuration properties. The configuration that’s served through the Config Server is housed external to the Config Server, typically in a source code control system such as Git.
+
+By keeping the configuration separate from the applications that
+consume it, it can evolve and be versioned independently of those applications.
+
+```
+@EnableConfigServer
+@SpringBootApplication
+public class ConfigServerApplication {
+ public static void main(String[] args) {
+ SpringApplication.run(ConfigServerApplication.class, args);
+ }
+}
+```
+
+##### Which comes first: the Config Server or the Service Registry?
+
+You’re setting up your microservices to learn about the Eureka service registry from
+the Config Server. This is a common approach to avoid propagating service registry
+details across every single microservice in an application.
+Alternatively, it’s possible to have the Config Server register itself with Eureka and
+have each microservice discover the Config Server as it would any other service. If
+you prefer this model, you’ll need to configure the Config Server as a discovery client
+and set the spring.cloud.config.discovery.enabled property to true. As a
+result, the Config Server will register itself in Eureka with the name “configserver.”
+The downside of this approach is that each service will need to make two calls at
+startup: one to Eureka to discover the Config Server, followed by one to Config Server
+to fetch configuration data.
+
+#### Summary
+
+- Spring Cloud Config Server offers a centralized source of configuration data to all microservices
+  that make up a larger microservice-architected application.
+
+- The properties served by Config Server are maintained in a backend Git or Vault repository.
+
+- In addition to global properties, which are exposed to all Config Server clients, Config Server
+  can also serve profile-specific and application-specific properties.
+
+- Sensitive properties can be kept secret by encrypting them in a backend Git repository or
+  by storing them as secrets in a Vault backend.
+
+- Config Server clients can be refreshed with new properties either manually via an Actuator
+  endpoint or automatically with Spring Cloud Bus and Git webhooks.
+
 ### KEY TERMS
 
 - At its core, Spring offers a container, often referred to as the `Spring application context`,
@@ -865,3 +943,8 @@ it as a bean in the Spring application context.
   renewal from a service for three renewal periods.
 - Eureka self-preservation mode
 - Deregister Service instances
+
+- Eureka - (Registration and discovery service)
+- Ribbon - (Client side load balancer)
+- Feign - (Rest Client Library that follows interface-driven approach)
+- Spring Cloud’s Config Server - (Centralized configuration for all services)
