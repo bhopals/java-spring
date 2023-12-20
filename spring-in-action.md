@@ -972,6 +972,38 @@ an approach similar to creating other Spring Cloud services
 - Turbine aggregates multiple Hystrix streams from multiple applications into a single stream that
   can be visualized together in the Hystrix dashboard.
 
+### Working with Spring Boot Actuator
+
+Spring Boot Actuator, an extension to Spring Boot that exposes the internals of a running Spring application as REST endpoints and JMX MBeans.
+
+Actuator offers production-ready features such as monitoring and metrics to Spring Boot applications. Actuator’s features are provided by way of several endpoints, which are made
+available over HTTP as well as through JMX MBeans.
+
+- In a machine, an actuator is a component that’s responsible for controlling and moving a mechanism
+
+- Using endpoints exposed by Actuator, we can ask things about the internal state of a running Spring Boot application:
+  - What configuration properties are available in the application environment?
+  - What are the logging levels of various packages in the application?
+  - How much memory is being consumed by the application?
+  - How many times has a given HTTP endpoint been requested?
+  - What is the health of the application and any external services it coordinates with?
+
+#### Summary
+
+- Spring Boot Actuator provides several endpoints, both as HTTP and as JMX MBeans,
+  that let you peek into the inner workings of a Spring Boot application.
+- Most Actuator endpoints are disabled by default, but can be selectively exposed by setting
+  `management.endpoints.web.exposure.include` and `management.endpoints.web.exposure.exclude`.
+- Some endpoints, such as the /loggers and /env endpoints, allow for write operations to change
+  a running application’s configuration on the fly.
+- Details regarding an application’s build and Git commit can be exposed in the /info endpoint.
+- An application’s health can be influenced by a custom health indicator, tracking the health of an
+  externally integrated application.
+- Custom application metrics can be registered through Micrometer, which affords Spring Boot applications
+  instant integration with several popular metrics engines such as Datadog, New Relic, and Prometheus.
+- Actuator web endpoints can be secured using Spring Security, much like any
+  other endpoint in a Spring web application.
+
 ### KEY TERMS
 
 - NOTE: To Enable any Spring Boot Service
@@ -1032,6 +1064,7 @@ an approach similar to creating other Spring Cloud services
 - Feign - (Rest Client Library that follows interface-driven approach)
 - Spring Cloud’s Config Server - (Centralized configuration for all services)
 - Hystrix - (Netflix Hystrix is a Java implementation of the circuit breaker pattern)
+- Spring Boot Actuator - (Monitoring and Metrics to Spring Boot applications)
 - Turbine (Netflix Turbine offers a way to aggregate all of the Hystrix streams from all the
   microservices into a single stream that the Hystrix dashboard can monitor
 
