@@ -214,8 +214,45 @@ protected void configure(AuthenticationManagerBuilder auth)
 - Information about the authenticated user can be obtained via the SecurityContext object (returned
   from SecurityContextHolder.getContext()) or injected into controllers using `@AuthenticationPrincipal`.
 
+### Working with Configuration Properties
+
+- Spring Boot autoconfiguration is like this. Autoconfiguration greatly
+  simplifies Spring application development.
+
+- Bean wiring—Configuration that declares application components to be created as beans in
+  the Spring application context and how they should be injected into each other.
+- Property injection—Configuration that sets values on beans in the Spring application context.
+
+#### Understanding Spring’s environment abstraction
+
+The Spring environment pulls from several property sources, including:
+
+- JVM system properties
+- Operating system environment variables
+- Command-line arguments
+- Application property configuration files (`application.properties`, `application.yml`)
+
+- Spring beans can be annotated with @ConfigurationProperties to enable injection of values from
+  one of several property sources.
+
+- Configuration properties can be set in command-line arguments, environment variables, JVM system
+  properties, properties files, or YAML files, among other options.
+
+- Configuration properties can be used to override autoconfiguration settings,
+  including the ability to specify a data-source URL and logging levels.
+
+- Spring profiles can be used with property sources to conditionally set configuration
+  properties based on the active profile(s).
+
 ### KEY TERMS
 
 - At its core, Spring offers a container, often referred to as the `Spring application context`,
   that creates and manages application components.
 - persisting objects to a database
+- The Spring Environment
+- Beans in Spring Application Context
+- Spring Property Soruces to fetch/pull property sources
+- Make properties available to beans in the Application Context
+- Defining profile-specific properties
+- Configuring Profiles
+- Conditionally creating beans with profiles (`@Profile("dev")`)
