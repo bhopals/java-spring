@@ -666,6 +666,39 @@ The Reactive Streams specification can be summed up by four interface definition
 - Spring 5 leverages Reactor to create reactive controllers, repositories, REST clients,
   and other reactive framework support.
 
+### Developing Reactive APIs
+
+- Blocking web frameworks won’t scale effectively under heavy request volume
+
+Typical Servlet-based web frameworks, such as Spring MVC, are blocking and multithreaded in nature, using a single thread per connection. As requests are handled,
+a worker thread is pulled from a thread pool to process the request. Meanwhile, the
+request thread is blocked until it’s notified by the worker thread that it’s finished.
+Consequently, blocking web frameworks won’t scale effectively under heavy
+request volume. Latency in slow worker threads makes things even worse because it’ll
+take longer for the worker thread to be returned to the pool, ready to handle another
+request. In some use cases, this arrangement is perfectly acceptable. In fact, this is
+largely how most web applications have been developed for well over a decade. But
+times are changing.
+
+- Asynchronous web frameworks, in contrast, achieve higher scalability with fewer
+  threads—generally one per CPU core. By applying a technique known as `event looping`, these frameworks are able to handle many requests per thread, making the per-connection cost more economical.
+
+- In an event loop, everything is handled as an event, including requests and callbacks
+  from intensive operations like database and network operations. When a costly operation is needed, the event loop registers a callback for that operation to be performed
+  in parallel, while it moves on to handle other events.
+
+- When the operation is complete, it’s treated as an event by the event loop, the
+  same as requests. As a result, asynchronous web frameworks are able to scale better
+  under heavy request volume with fewer threads, resulting in reduced overhead for
+  thread management.
+
+- Spring WebFlux - Spring MVC Reactive web framework
+
+- Flux v/s Mono
+  While both Mono and Flux can be used for reactive programming, they have different use cases and behaviors. As we have seen, Mono is used when you want to work with a single value, while Flux is used when you want to work with a potentially unbounded stream of values.
+
+- Observable v/s Single - RxJava options (equivalent for Flux / Mono in Spring WebFlux)
+
 ### KEY TERMS
 
 - At its core, Spring offers a container, often referred to as the `Spring application context`,
