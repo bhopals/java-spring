@@ -522,11 +522,20 @@ So we can see, Spring Application Context has access to all the beans created in
 
 - By Class properties - Least preferred
   - Can be public or private properties
+    - Field-based Dependency Injection refers to the use of the `@Autowired` annotation on top
+      of a field or property in a class.
   - Using private properties is EVIL
     - Spring can use reflection to set private properties
     - "Works" but is slow & make testing difficult
 - By Setters - Area of much debate
+  - Setter-based Dependency Injection refers to the use of the @Autowired annotation on top of
+    the setter method of a class
 - By Constructor - Most Preferred
+
+  - Constructor-based Dependency Injection refers to the use of the `@Autowired` annotation on top of
+    a class constructor.
+
+- For Difference, Refer - https://javarevisited.blogspot.com/2012/11/difference-between-setter-injection-vs-constructor-injection-spring-framework.html#axzz8MZ7sqU93
 
 #### Dependency Injections (DI) in Concrete Classes v/s Interfaces
 
@@ -561,6 +570,85 @@ So we can see, Spring Application Context has access to all the beans created in
 - Use final properties for injected components
   - Declare property `private final` and initialize in the constructor
 - Whenever practical, code to an interface
+
+#### Primary Beans
+
+- In case of multiple Beans of the same type, we can instruct Spring to which one to use by
+  annotation the Primary Bean with `@Primary` annotation
+
+#### Using Qualifiers
+
+- Control how Spring wiring things
+- `@Qualifier('<probable-now-of-the-instance')`
+- When we create Service, we can annotate that service with name
+
+```
+@Service('propertyGreetingService')
+public class GreetingServicePropertyInjected implements GreetingService {}
+// Where ever we want to inject the above service, we gonna use this name - `propertyGreetingService`
+// `@Qualifier('propertyGreetingService')`
+```
+
+### Spring Profiles
+
+- Profiles are a way that you can control what bean are wired into the context and which ones are not.
+- `@Profile('<profile-name>')`
+- To make a default profile, `@Profile({'<profile-name>', 'default'})`
+
+### Spring Bean Life Cycle (Bean Creation)
+
+- 1. Instantiate
+- 2. Populate Properties
+- 3. Call `setBeanName` of `BeanNameAware`
+- 4. Call `setBeanFactory` of `BeanFactoryAware`
+- 5. Call `setApplicationContext` of `ApplicationContextAware`
+- 6. Pre Initialization Bean PostProcessors
+- 7. Initializing Beans `afterPropertiesSet`
+- 8. Custom Init Method
+- 9. Post Initialization Bean PostProcessors
+- 10. BEAN READY TO USE
+
+### Spring Bean Life Cycle (Bean Termination)
+
+- 1. Container Shutdown
+- 2. `@PreDestroy` annotated method
+- 3. Disposable Bean's `destroy()`
+
+#### Callback Interfaces
+
+- Spring has two interfaces you can implement for callback events
+- InitializingBean.afterPropertiesSet()
+  - Called after properties are set
+- DisposableBean.destroy()
+  - Called during bean destruction in shutdown
+
+#### LifeCycle Annotations
+
+- Spring has two annotations you can use to hook into bean life cycle
+  - `@PostConstruct` annotated methods will be called after the bean has been constructed,
+    but before its returned to the requesting object
+  - `@PreDestroy` is called just before the bean is destroyed by the container
+
+#### Bean Post Processors
+
+- Gives you a means to tap into the Spring Context life cycle and interact with beans as they are processed
+- Called for all beans in context
+- Implement interface `BeanPostProcessor`
+  - `postProcessBeforeInitialization` - Called before bean initialization method
+  - `postProcessAfterInitialization` - Called after bean initialization
+
+#### `Aware` Interfaces
+
+- Spring has over 14`Aware` interfaces
+- These are used to access the Spring Framework infrastructure
+- There are largerly used within the framework
+- Rarely used by Spring Developers
+- Review extensions of the Aware Interface for current interfaces
+- Examples
+  - ApplicationContextAware, ApplicationEventPublisherAware, BeanClassLoaderAware, BeanFactoryAware
+    BeanFactoryAware, BeanNameAware, BootstrapContextAware, LoadTimeWeaverAware, MessageSourceAware,
+    NotificationPublisherAware, PortletConfigAware, PortletContextAware, ResourceLoaderAware,
+    ServletConfigAware, ServletContextAware
 
 ### KEY TERMS
 
