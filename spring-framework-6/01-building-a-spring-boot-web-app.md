@@ -159,6 +159,81 @@ To Initialize data at the start of the application in our "H2" database
 - Enter JDBC Url details (`jdbc:h2:mem:<4f2ab983-8c47-457b-a147-1e7bf4008cff>`), click on Connect Button
 - You should be redirected to Web based SQL console and see the data
 
+### Introduction of Spring MVC
+
+- MVC stands for Model View Controller, so it's a programming paradigm as to how you develop applications.
+- MVC is a common design pattern for GUI and Web Applications
+- MVC
+
+  - Model - Simple POJO with collection of Properties
+  - View - Data as requested by the client. Implemented with JSP, Thymeleaf, Jackson, etc.
+  - Controller - Java class implemented to handle request mapping.
+
+- Spring MVC
+  - Client Request ==> Dispatcher Servlet ==> Controller (Returns Model - POJO) ==> Service ==> Spring Data JPA
+  - refer attached - `01-spring-mvc.png`
+
+### Create Service Layer
+
+- Create interface `BookService` and Implementation Calss (`BookServiceImpl`)
+- Annotate Impl class with `@Service` annotation
+- `@Service` is a Spring Stereotype saying that this is a service
+- `@Service` register the class as Spring Component
+- Add method implementation
+
+```
+    @Service
+    public class BookServiceImpl implements BookService {
+        private final BookRepository bookRepository;
+        public BookServiceImpl(BookRepository bookRepository) {
+            this.bookRepository = bookRepository;
+        }
+        @Override
+        public Iterable<Book> findAll() {
+            return bookRepository.findAll();
+        }
+    }
+```
+
+### Configuring Spring Controllers
+
+- Create Controller Calss (`Controller`)
+- Annotate Impl class with `@Controller` annotation
+
+```
+@Controller
+public class BookController {
+
+	private final BookService bookService;
+
+	public BookController(BookService bookService) {
+		this.bookService = bookService;
+	}
+
+	@RequestMapping("/books")
+	public String getBooks(Model model) {
+		model.addAttribute("books", bookService.findAll());
+		return "books";
+	}
+
+}
+```
+
+### Thymeleaf Templates
+
+- Add `thymeleaf` dependeny in `pom.xml`
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
+```
+
+- Add `books.html` under /resources/
+- Restart the Spring Boot Server
+- Go to `http://localhost:8080/books` to get the list of the books
+
 ### KEY TERMS
 
 - Spring 6.0
