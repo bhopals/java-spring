@@ -484,6 +484,84 @@ public class DieselEngine implements Engine {
 }
 ```
 
+### Spring Context
+
+```
+@Controller
+public class MyController {
+	public static String sayHello() {
+		System.out.println("I am in MyController");
+		return "Hello MyController";
+	}
+}
+
+
+@SpringBootApplication
+public class Spring6WebappApplication {
+	public static void main(String[] args) {
+		ApplicationContext ctx = SpringApplication.run(Spring6WebappApplication.class, args);
+		MyController ctrl = ctx.getBean(MyController.class);
+		System.out.println("In Main Method");
+		System.out.println(ctrl.sayHello());
+	}
+}
+```
+
+So we can see, Spring Application Context has access to all the beans created in Spring Context.
+
+### Basics of Dependency Injection
+
+- Dependency Injection is where a needed dependeny is injected by another object.
+- Can be at instantiation via constructor, or after via setter
+- The class being injected has no responsibility in instantiting the object being injected.
+- Some say you avoid declaring objects using `new`
+  - Not 100% correct
+  - Be pragmatic in what is and is not being managed in the Spring Context
+
+#### Types of Dependency Injections
+
+- By Class properties - Least preferred
+  - Can be public or private properties
+  - Using private properties is EVIL
+    - Spring can use reflection to set private properties
+    - "Works" but is slow & make testing difficult
+- By Setters - Area of much debate
+- By Constructor - Most Preferred
+
+#### Dependency Injections (DI) in Concrete Classes v/s Interfaces
+
+- DI can be done with Concrete Classes or with Interfaces
+- Generally DI with Concrete Classes should be avoided
+- DI via Interfaces is highly preferred
+  - Allows runtime to decide implementation to Inject
+  - Follows Interface segregation Principle of SOLID
+  - Also, makes your code more testable - mocking becomes trivial
+
+#### Inversion of Control (IoC)
+
+- Inversion of Control - aka IoC
+- Is a technique to allow dependencies to be injected at runtime
+- Dependencies are not predetermined
+- Allows the framework to compose the application by controlling which implementation is injected
+  - Example - H2 in memory data source or MySQL data source
+
+#### IoC v/s Dependency Injection (DI)
+
+- IoC and DI are easily confused
+- DI refers much to the composition of your classes
+  - ie - You compose your classes with DI in mind
+  - You might write code to `inject` a dependency
+- IoC is the runtime environment of your code
+  - Control of dependency injection is inverted to the framework
+  - Spring is in control of the injection of dependencies
+
+#### Best Practices with Dependency Injection
+
+- Favor using Constructor Injection over Setter Injection
+- Use final properties for injected components
+  - Declare property `private final` and initialize in the constructor
+- Whenever practical, code to an interface
+
 ### KEY TERMS
 
 - Spring 6.0
@@ -509,6 +587,12 @@ public class DieselEngine implements Engine {
 - ORM Vendor
 - The ORM layer exists between the application and the database
 
+- SOLID Principles of OOP
+  - S - Single Responsibility Principle
+  - O - Open Closed Principle
+  - L - Liskov Substitution Principle
+  - I - Interface Segregation Principle
+  - D - Dependency Inversion Principle
 - Software entities (e.g., classes, modules, functions)
 
 ```
