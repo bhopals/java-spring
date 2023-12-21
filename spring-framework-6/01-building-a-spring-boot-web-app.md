@@ -107,6 +107,58 @@
 
 - Click on Generate to Download the Project
 
+### JPA Relationships
+
+- create package `domain`
+
+  - Author.java
+  - Book.java
+
+- Many to Many
+  - `@ManyToMany(mappedBy="authors")`
+  -
+  ```
+    @ManyToMany
+    @JoinTable(name = "author_book", joinColumns=@JoinColumn(name="book_id"), inverseJoinColumns = @JoinColumn(name="author_id"))
+  ```
+
+One thing you typically want to do when you're working with JPA entities is to set an equals and hashCode
+method because Hibernate is going to use this internally to determine object equity, and it's kind
+of important to implement it because there's a couple of different strategies you can use.
+
+### Spring Data Repositories
+
+- create package `repositories`
+  - AuthorRepository.java
+  - BookRepository.java
+- create interface and `extends` it by `CrudRepository<T, ID>`
+  `BookRepository extends CrudRepository<Book, Long>`
+
+So with these defined what's going to occur when we run this application, Spring Data JPA is going
+to provide us the implementation so we do not write the implementation of the repository that is going
+to be generated for us at runtime by Spring Data JPA.
+
+### Initializing Data with Spring
+
+To Initialize data at the start of the application in our "H2" database
+
+- create package `bootstrap`
+- create class `Bootstrap`, annotate it with `@Component`, and implement interface
+  `org.springframework.boot.CommandLineRunner`
+
+### Introduction to H2 Database Console
+
+- Memory database running in Spring Application Context
+- To see data, we need to enable an utility that is produced by H2, which is web-based console
+  that we can utilize to view the data
+
+- To enable it, go to `application.properties`, Add `spring.h2.console.enabled=true`
+- Re-Run the spring application
+- Grab database connection URL details from the console
+- Go to - `localhost:8080/h2-console`
+- Enter JDBC Url details (`jdbc:h2:mem:<4f2ab983-8c47-457b-a147-1e7bf4008cff>`), click on Connect Button
+- You should be redirected to Web based SQL console and see the data
+
 ### KEY TERMS
 
 - Spring 6.0
@@ -118,3 +170,16 @@
 - Spring Services
 - Spring Data JPA
 - JPA Entities
+
+- Spring Boot JPA is a Java specification for managing relational data in Java applications.
+- It allows us to access and persist data between Java object/ class and relational database.
+- JPA follows Object-Relation Mapping (ORM).
+- Object-Relational metadata
+- The API itself, defined in the persistence package
+- The Java Persistence API
+- It is a powerful repository and custom object-mapping abstraction.
+- It supports for cross-store persistence.
+- Java Persistence API
+- Vendor JPA Implementation
+- ORM Vendor
+- The ORM layer exists between the application and the database
