@@ -147,9 +147,9 @@ In Reactive Streams, backpressure also defines how to regulate the transmission 
 
 - Reactive Streams is a set of 4 interfaces which define the API:
   - Publisher
+  - Processor
   - Subscriber
   - Subscription
-  - Processor
 
 ### Spring MVC & Spring WebFlux
 
@@ -379,6 +379,18 @@ class PersonRepositoryImplTest {
 ### Step Verifier
 
 - To test Reactive Flux and Mono
+
+### Mono v/s Flux
+
+- Mono and Flux are both implementations of the Publisher interface
+
+- Mono
+  Mono is a special type of Publisher. A Mono object represents a single or empty value. This means it can emit only one value at most for the onNext() request and then terminates with the onComplete() signal. In case of failure, it only emits a single onError() signal.
+
+- Flux
+  Flux is a standard Publisher that represents 0 to N asynchronous sequence values. This means that it can emit 0 to many values, possibly infinite values for onNext() requests, and then terminates with either a completion or an error signal.
+
+- Refer - https://www.baeldung.com/java-reactor-flux-vs-mono
 
 ### KEY TERMS
 
