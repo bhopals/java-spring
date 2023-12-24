@@ -1,4 +1,4 @@
-## Spring WebFlux Resource Server
+## Spring WebFlux.fn Resource Server
 
 - Add dependency in `POM.XML`
 
