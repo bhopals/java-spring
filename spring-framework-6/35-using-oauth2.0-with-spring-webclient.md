@@ -24,7 +24,7 @@ spring.security.oauth2.client.registration.springauth.authorization-grant-type=c
 spring.security.oauth2.client.registration.springauth.provider=springauth
 ```
 
-- Add Security Configuration
+### Spring Security Configuration
 
 ```
 /**
@@ -54,6 +54,8 @@ public class SpringSecurityConfig {
 
 }
 ```
+
+### Web Client Filter Configuration
 
 - Add WebClientConfig
 
