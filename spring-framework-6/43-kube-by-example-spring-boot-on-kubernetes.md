@@ -47,7 +47,7 @@
 
 - Create Deployment YML using `kubectl`
 
-  - `kubectl create deployment kbe-rest --image springframeworkguru/kbe-rest-brewery --dry-run=client -o=yaml >> deployment.yml`
+  - `kubectl create deployment kbe-rest --image springframeworkguru/kbe-rest-brewery --dry-run=client -o=yaml > deployment.yml`
 
 - `ls`
 - `kubectl apply -f deployment.yml` - To creat a pod
@@ -59,7 +59,7 @@
 - Services act as the gateway for accessing your application, enabling seamless communication
   and load balancing.
 
-- `kubectl create service clusterip kbe-rest --tcp=8080:8080 --dry-run=client -o=yaml >> service.yml`
+- `kubectl create service clusterip kbe-rest --tcp=8080:8080 --dry-run=client -o=yaml > service.yml`
 - `ls`
 - `kubectl apply -f service.yml` - To creat a pod
 - `kubectl get all`
@@ -127,7 +127,7 @@
 
 - Reapply the change
 
-  - `kubectl apply -y deployment.yml`
+  - `kubectl apply -f deployment.yml`
 
 - `kubectl get all`
 
