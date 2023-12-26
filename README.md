@@ -5,7 +5,6 @@ Spring Resources
 #### Spring Intro
 
 - Spring framework to create Java Enterprise Application. Spring came into being in 2003 as a response to the complexity of the early J2EE specifications:
-
   - Servlet API (JSR 340)
   - WebSocket API (JSR 356)
   - Concurrency Utilities (JSR 236)
