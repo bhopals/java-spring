@@ -20,3 +20,6 @@
 - Repo - https://sfg-beer-works.github.io/brewery-api/#tag/Beer-Service
 
 - https://12factor.net/
+
+- Differenece between OpenAPI 2.0 and OpenAPI 3.0
+  - https://blog.stoplight.io/difference-between-open-v2-v3-v31

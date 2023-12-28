@@ -178,3 +178,4 @@ jobs:
 
 - Like Project Lombok, MapStruct hooks into annotation processing to generate code
 - Unlike Project Lombok, MapStruct will generate source code
+- We no longer need to write BoilerPlate Code
