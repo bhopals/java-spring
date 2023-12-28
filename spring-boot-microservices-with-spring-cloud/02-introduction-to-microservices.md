@@ -339,3 +339,10 @@ In the modern era, software is commonly delivered as a service: called web apps,
 - Strict separation between the Build, Release and Run stages
 - The twelve-factor app is a methodology for building software-as-a-service apps
 - Create a view across multiple services
+
+- Explicitly declare and isolate dependencies
+- strict separation of config from code.
+- Build stage, Release stage, Run stage
+- Stateless processes
+- Maximize robustness with fast startup and graceful shutdown
+- Processes should strive to minimize startup time
