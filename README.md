@@ -38,3 +38,18 @@ Spring Resources
 - Design Patterns - https://stackify.com/service-locator-pattern/
 
 - Udemy Course - https://www.udemy.com/course/spring-framework-5-beginner-to-guru/?LSNPUBID=JVFxdTr9V80&ranEAID=JVFxdTr9V80&ranMID=39197&ranSiteID=JVFxdTr9V80-Q3U09afakCGt0cOMJbfn1Q&utm_medium=udemyads&utm_source=aff-campaign
+
+- Ways To Reduce JVM Docker Image Size
+
+  - Use `Dive` to dive into the Docker Image
+  - With `jlink`, we can create a custom Java runtime that includes only the necessary components, resulting in a smaller final image ( The Image size is going to be two times smaller than original size - with default java runtime)
+
+  - Stripping Container Image Size, Even More, Using Java Dependency Analysis Tool (`Jdeps`). `Jdeps` understands static dependecies of your applications and libraries. - This is going
+    to reduce the docker size by 30%.
+  - Refer - https://dzone.com/articles/ways-to-reduce-jvm-docker-image-size
+
+- More Resources
+  - https://dzone.com/microservices
+  - https://dzone.com/performance
+  - https://dzone.com/security
+  - https://dzone.com/containers

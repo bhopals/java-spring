@@ -224,7 +224,12 @@ public BlockingRestTemplateCustomizer(
 ### KEY TERMS
 
 - Emphemeral Port
-- Java IO Packages
-- Java NIO Packages
+- Java IO Packages - Blocking I/O
+- Java NIO 1.0 Packages - Added non-blocking I/O
+- Java NIO 2.0 Packages (also called Async NIO) - asynchronous I/O
+
+NIO.2, also known as asynchronous I/O
 
 - Request Interceptor
+- Concurrent HTTP Requests
+- Perform I/O and scale to many concurrent connections
