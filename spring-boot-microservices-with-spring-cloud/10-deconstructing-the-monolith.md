@@ -103,6 +103,56 @@
     - Real use would be more complex
     - Table Name - `BEER_ORDER`, `BEER_ORDER_LINE`, `CUSTOMER`
 
+#### Setting Default Ports for Services
+
+- Brewery Beer Service - 8080
+- Brewery Beer Order Service - 8081
+- Brewery Beer Inventory Service - 8082
+
+- Update PORT details in `application.properties` in each service
+  - `server.port=<port-number>`
+
+### Deconstruction
+
+- Where We Are At
+
+  - Beer Monolith has been broken into 3 independent microservices
+  - Each is using its own in-memory database
+  - Setup inter-service communication for read operations
+
+- What’s Not Working
+
+  - Order Allocation is not working
+  - Beer ‘Brewing’ is not working
+  - Monolith was using Spring Events and scheduled jobs for these features
+    - Events and consumers of events is broken
+  - The 3 services each are using Maven, BUT there is a high degree of duplication in Maven POM files
+
+- Next Steps
+
+  - Establish Maven BOM to reduce duplication in Maven POMs
+    - Also - good technique for standardization and compliance in the enterprise
+  - Setup MySQL for database - will help with troubleshooting, and configuration for target deployment
+  - Transaction to JMS to publish events as messages
+  - Build Saga’s to coordinate microservice actions for events
+    - ie Order Allocation
+
+- A BOM is a special kind of POM that is used to control the versions of a project's dependencies and provide a central place to define and update those versions
+
+- A Maven pom defines the project structure including the stated dependencies. A bom defines the complete bill of materials of what dependencies are actually used - the effective dependencies
+
+- What Is Maven POM?
+
+  - Maven POM is an XML file that contains information and configurations (about the project) that are
+    used by Maven to import dependencies and build the project.
+
+- What Is Maven BOM?
+
+  - BOM stands for `Bill Of Materials`. A BOM is a special kind of POM that is used to control the versions
+    of a project’s dependencies and provide a central place to define and update those versions.
+
+- Dependency Management is a mechanism to centralize the dependency information.
+
 ### KEY TERMS
 
 - Domain Driven Design
@@ -119,3 +169,5 @@
 - Contexts will define common terminology
 
 - Domain Driven Design Building Blocks
+- Maven BOM
+- BOM - Bill of Materials
