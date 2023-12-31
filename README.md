@@ -22,6 +22,20 @@ Spring Resources
 - non-blocking reactive code
 - blocking imperative code
 
+### Tips and Tricks for IntelliJ
+
+- Create Workspace to bring in all the microservices Projects (Instead of Juggling b/w different windows)
+- To do that:
+
+  - Create an EMPTY Directory using Terminal
+  - Open IntelliJ, create new Project -> select "Empty Project" ->
+    select the above created directory -> finish
+  - Now do `git clone` all the microservices projects that you intended to bring in.
+
+  - Now Add those projects into the workspace as Module
+    - File -> New -> Module -> Module from Existing Source -> Select Project that we have cloned (one by one)
+    - Select "Import Module from externals" -> Select Maven -> Finish
+
 ### Reference
 
 - Spring Projects - https://spring.io/projects
