@@ -127,3 +127,4 @@ public class JmsConfig {
 - Spring stereotype
 - More process control
 - Processes between microservices
+- Message Broker

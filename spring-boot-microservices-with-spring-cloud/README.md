@@ -36,4 +36,8 @@
 - https://12factor.net/
 
 - Differenece between OpenAPI 2.0 and OpenAPI 3.0
+
   - https://blog.stoplight.io/difference-between-open-v2-v3-v31
+
+- https://microservices.io/
+- https://microservices.io/patterns/data/saga.html
