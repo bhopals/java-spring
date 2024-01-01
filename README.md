@@ -24,6 +24,8 @@ Spring Resources
 
 ### Tips and Tricks for IntelliJ
 
+#### Import multiple REPOS/PROJECTS under on workspace
+
 - Create Workspace to bring in all the microservices Projects (Instead of Juggling b/w different windows)
 - To do that:
 
@@ -35,6 +37,13 @@ Spring Resources
   - Now Add those projects into the workspace as Module
     - File -> New -> Module -> Module from Existing Source -> Select Project that we have cloned (one by one)
     - Select "Import Module from externals" -> Select Maven -> Finish
+
+##### Auto Import on Paste
+
+- Preference -> Editor -> General -> Auto Import
+  - 1. Java -> Insert Imports on Paste -> All
+  - 2. Check `Add unambiguous imports on the fly`
+  - 3. Check `Optimize imports on the fly (for current projects)`
 
 ### Reference
 
