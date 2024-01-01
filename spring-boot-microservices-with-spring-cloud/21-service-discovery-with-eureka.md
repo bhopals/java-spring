@@ -94,3 +94,4 @@ public class LoadBalancedRoutesConfig {
 ### KEY TERMS
 
 - OpenFeign Client
+- Eurkea behind the scene uses Ribbon Load Balancer to distribute traffic across services.
