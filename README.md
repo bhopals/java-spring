@@ -41,9 +41,38 @@ Spring Resources
 ##### Auto Import on Paste
 
 - Preference -> Editor -> General -> Auto Import
+
   - 1. Java -> Insert Imports on Paste -> All
   - 2. Check `Add unambiguous imports on the fly`
   - 3. Check `Optimize imports on the fly (for current projects)`
+
+#### Ways To Reduce JVM Docker Image Size
+
+- Use `Dive` to dive into the Docker Image
+- With `jlink`, we can create a custom Java runtime that includes only the necessary components, resulting in a smaller final image ( The Image size is going to be two times smaller than original size - with default java runtime)
+
+- Stripping Container Image Size, Even More, Using Java Dependency Analysis Tool (`Jdeps`). `Jdeps` understands static dependecies of your applications and libraries. - This is going
+  to reduce the docker size by 30%.
+- Refer - https://dzone.com/articles/ways-to-reduce-jvm-docker-image-size
+
+### SERVICES DETAILS
+
+- Spring Boot Micro Services
+
+  - mssc-beer-service - 8080
+  - mssc-beer-inventory-service - 8082
+  - mssc-inventory-failover - 8083
+  - mssc-beer-order-service - 8081
+
+- Spring Cloud Services
+  - mssc-brewery-gateway - 9090
+  - mssc-brewery-eureka - 8761
+  - mssc-config-server - 8888
+
+### KEY TERMS
+
+- Spring Boot Microservices
+- Spring Cloud Services
 
 ### Reference
 
@@ -61,15 +90,6 @@ Spring Resources
 - Design Patterns - https://stackify.com/service-locator-pattern/
 
 - Udemy Course - https://www.udemy.com/course/spring-framework-5-beginner-to-guru/?LSNPUBID=JVFxdTr9V80&ranEAID=JVFxdTr9V80&ranMID=39197&ranSiteID=JVFxdTr9V80-Q3U09afakCGt0cOMJbfn1Q&utm_medium=udemyads&utm_source=aff-campaign
-
-- Ways To Reduce JVM Docker Image Size
-
-  - Use `Dive` to dive into the Docker Image
-  - With `jlink`, we can create a custom Java runtime that includes only the necessary components, resulting in a smaller final image ( The Image size is going to be two times smaller than original size - with default java runtime)
-
-  - Stripping Container Image Size, Even More, Using Java Dependency Analysis Tool (`Jdeps`). `Jdeps` understands static dependecies of your applications and libraries. - This is going
-    to reduce the docker size by 30%.
-  - Refer - https://dzone.com/articles/ways-to-reduce-jvm-docker-image-size
 
 - More Resources
   - https://dzone.com/microservices
