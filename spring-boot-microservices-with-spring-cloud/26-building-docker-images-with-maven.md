@@ -106,3 +106,5 @@ ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "org.springframew
 - Fabric8
 
 - Docker Layer
+- Docker File
+- Layered Images
