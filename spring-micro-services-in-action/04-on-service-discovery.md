@@ -519,6 +519,7 @@ To use the OrganizationFeignClient class, all you need to do is autowire and use
 - From the lowest level of Abstraction to the highest level
 
 - Spring Discovery Client
+- Spring Discovery Agent
 
 - Antithetical (Contrary to)
 - Ribbon Aware RestTemplate
