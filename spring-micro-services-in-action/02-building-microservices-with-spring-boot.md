@@ -1,5 +1,8 @@
 ## Building Microservices with Spring Boot
 
+The microservices architecture is a powerful design paradigm for breaking down
+complex monolithic software systems into smaller, more manageable pieces.
+
 - Monolith Applications
 
   - Tightly coupled

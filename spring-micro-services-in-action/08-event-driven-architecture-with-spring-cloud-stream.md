@@ -286,3 +286,4 @@ instance within a group of service instances to consume and process a message.
 
 - Using Messaging/Asyncronous Communication allows your APP. to scale and become more Fault Tolerant
 - Abstracting away platform-specific details of the underlying message platform
+- Use Kafka as our message bus to transport messages between our services.
