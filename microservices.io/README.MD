@@ -154,3 +154,4 @@ How to implement a UI screen or page that displays data from multiple services?
 - Deliver software rapidly, frequently, reliably
 
 - Team Autonomy
+- Drawback of using synchronous request/response is that it reduces availability
