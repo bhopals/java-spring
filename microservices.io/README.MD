@@ -144,6 +144,7 @@ How to implement a UI screen or page that displays data from multiple services?
 
 - https://microservices.io/
 - https://microservices.io/patterns/
+- https://eventuate.io/exampleapps.html
 
 - Enabling rapid, frequent and reliable software delivery
 - Deliver large, complex applications rapidly, frequently, reliably and sustainably
