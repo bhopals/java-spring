@@ -152,3 +152,5 @@ How to implement a UI screen or page that displays data from multiple services?
 - Thrive in volatile, uncertain, complex and ambiguous world
 - Business must nimble, agile and innovate faster
 - Deliver software rapidly, frequently, reliably
+
+- Team Autonomy
